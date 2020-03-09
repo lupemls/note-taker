@@ -35,8 +35,9 @@ app.post('/api/notes', (req, res) => {
     }else{
         newNote.id = 1;
     }
-    
+
     db.push(newNote);
+    res.json(db);
     fs.writeFile('./db/db.json', JSON.stringify(db), err => {
         if(err){
             throw err;
@@ -56,13 +57,14 @@ app.delete('/api/notes/:id', (req, res) => {
             db.splice(i, 1);
         };
     };
-        fs.writeFile('./db/db.json', JSON.stringify(db), err => {
-            if(err) {
-                throw err;
-            }
-            // res.json(db);
-            console.log(`Note titled: "${noteTitle}" has been deleted`);
-        });
+    res.json(db);
+    fs.writeFile('./db/db.json', JSON.stringify(db), err => {
+        if(err) {
+            throw err;
+        }
+        // res.json(db);
+        console.log(`Note titled: "${noteTitle}" has been deleted`);
+    });
 });
 
 app.listen(port, () => {
