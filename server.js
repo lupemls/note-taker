@@ -29,8 +29,13 @@ app.post('/api/notes', (req, res) => {
     const newNote = req.body;
     console.log(newNote);
     
-    //this will get the id of the last entry (which will be the highest) and increment it by one for a unique id
-    newNote.id = db[db.length-1].id + 1;
+    //this will get the id of the last entry (which will be the highest) and increment it by one for a unique id,or will set it to 1 if there are no entries
+    if(db.length > 0){
+        newNote.id = db[db.length-1].id + 1;
+    }else{
+        newNote.id = 1;
+    }
+    
     db.push(newNote);
     fs.writeFile('./db/db.json', JSON.stringify(db), err => {
         if(err){
@@ -40,13 +45,25 @@ app.post('/api/notes', (req, res) => {
     })
 });
 
-// app.delete('/api/notes/:id', (req, res) => {
-//     for(let i = 0; i < db.length; i++){
-//         if(db[i].id === req.params.id){
-//             db.splice(i, 1);
-//         }
-//     };
-// });
+app.delete('/api/notes/:id', (req, res) => {
+    let noteTitle;
+    for(let i = 0; i < db.length; i++){
+        const targetId = parseInt(req.params.id);
+        console.log(typeof targetId, 'and also ', typeof db[i].id);
+        if(db[i].id === targetId){
+            console.log('note to delete ', JSON.stringify(db[i]));
+            noteTitle = db[i].title;
+            db.splice(i, 1);
+        };
+    };
+        fs.writeFile('./db/db.json', JSON.stringify(db), err => {
+            if(err) {
+                throw err;
+            }
+            // res.json(db);
+            console.log(`Note titled: "${noteTitle}" has been deleted`);
+        });
+});
 
 app.listen(port, () => {
     console.log(`App listening on port ${port}`);
