@@ -6,7 +6,7 @@ const fs = require('fs');
 const db = require('./db/db.json');
 
 const app = express();
-const port = 3000;
+const PORT = process.env.PORT || 3000;
 
 //allows express to parse json data
 app.use(express.urlencoded({ extended: true }));
@@ -27,7 +27,6 @@ app.get('/api/notes', (req, res) => {
 
 app.post('/api/notes', (req, res) => {
     const newNote = req.body;
-    console.log(newNote);
     
     //this will get the id of the last entry (which will be the highest) and increment it by one for a unique id,or will set it to 1 if there are no entries
     if(db.length > 0){
@@ -42,7 +41,7 @@ app.post('/api/notes', (req, res) => {
         if(err){
             throw err;
         }
-        console.log('A new note has been added to the list');
+        console.log(`A new note: "${newNote.title}" has been added to the list`);
     })
 });
 
@@ -50,9 +49,7 @@ app.delete('/api/notes/:id', (req, res) => {
     let noteTitle;
     for(let i = 0; i < db.length; i++){
         const targetId = parseInt(req.params.id);
-        console.log(typeof targetId, 'and also ', typeof db[i].id);
         if(db[i].id === targetId){
-            console.log('note to delete ', JSON.stringify(db[i]));
             noteTitle = db[i].title;
             db.splice(i, 1);
         };
@@ -62,11 +59,10 @@ app.delete('/api/notes/:id', (req, res) => {
         if(err) {
             throw err;
         }
-        // res.json(db);
         console.log(`Note titled: "${noteTitle}" has been deleted`);
     });
 });
 
-app.listen(port, () => {
-    console.log(`App listening on port ${port}`);
+app.listen(PORT, () => {
+    console.log(`App listening on port ${PORT}`);
 });
