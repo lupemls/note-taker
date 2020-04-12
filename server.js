@@ -6,7 +6,7 @@ const fs = require('fs');
 const db = require('./db/db.json');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3500;
 
 //allows express to parse json data
 app.use(express.urlencoded({ extended: true }));
